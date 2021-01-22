@@ -1,3 +1,8 @@
+from typing import Dict
+
 
 class DatasetService:
-    pass
+
+    @staticmethod
+    def upload_dataset(file: Dict):
+        pass
