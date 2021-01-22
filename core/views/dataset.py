@@ -11,5 +11,5 @@ from core.services import DatasetService
 @api_view(['POST'])
 def dataset_view(request: Request) -> Response:
     service: DatasetService = DatasetService()
-    data: Dict = service.upload_dataset(file=request.FILES)
+    data: Dict = service.upload_dataset(file=request.FILES, user=request.user)
     return Response(data=data, status=HTTP_201_CREATED)
