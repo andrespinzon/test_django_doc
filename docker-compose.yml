@@ -1,5 +1,11 @@
 version: '3'
 services:
+  dbmongo:
+    image: "mongo:latest"
+    ports:
+      - 27017:27017
+    command: mongod
+
   db:
     image: mdillon/postgis:9.6-alpine
     ports:
@@ -22,7 +28,6 @@ services:
       - DB_EXTERNAL=postgresql://postgres:postgres@db:5432/testdjango_dev
     depends_on:
       - db
-
 
   loaddata:
     build: .
@@ -51,6 +56,7 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
       - DB_EXTERNAL=postgresql://postgres:postgres@db:5432/testdjango_dev
+      - DB_PORT_27017_TCP_ADDR=dbmongo
     depends_on:
       - loaddata
 
