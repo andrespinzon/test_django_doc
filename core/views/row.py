@@ -13,6 +13,7 @@ from core.services import RowService
 def row_view(request: Request) -> Response:
     if request.method == 'GET':
         dataset_id = request.query_params.get('dataset_id', None)
-        return RowService.get_all_rows(request, dataset_id=dataset_id)
+        name = request.query_params.get('name', None)
+        return RowService.get_all_rows(request, dataset_id=dataset_id, name=name)
     else:
         raise APIException(detail=f'The method {request.method} is invalid.')

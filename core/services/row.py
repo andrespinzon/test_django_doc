@@ -3,8 +3,11 @@ import pandas as pd
 from django.contrib.gis.geos import Point
 from rest_framework.exceptions import APIException
 from rest_framework.request import Request
+from constance import config
 
+from common.paginator import CustomPagination
 from core.models import Row
+from core.serializers import RowSerializer
 
 
 class RowService:
@@ -33,8 +36,19 @@ class RowService:
         ]
 
     @staticmethod
-    def get_all_rows(request: Request, dataset_id: int):
+    def get_all_rows(request: Request, dataset_id: int, name: str):
         if not dataset_id:
             raise APIException(detail='The query param dataset_id is required.')
+
+        paginator = CustomPagination()
+        paginator.page_size = config.PAG_ROW
+        rows = Row.objects.load_by_dataset_id_and_name(dataset_id=dataset_id, name=name)
+        rows = paginator.paginate_queryset(rows, request)
+
+        data = RowSerializer(
+            instance=rows,
+            many=True
+        ).data
+        return paginator.get_paginated_response(data)
 
 
