@@ -1,8 +1,9 @@
 import pandas as pd
 
 from django.contrib.gis.geos import Point
+from rest_framework.exceptions import APIException
+from rest_framework.request import Request
 
-from config.extention import engine
 from core.models import Row
 
 
@@ -30,3 +31,9 @@ class RowService:
                 dataset_id=row['dataset_id'],
             ) for i, row in self._data.iterrows()
         ]
+
+    @staticmethod
+    def get_all_rows(request: Request, dataset_id: int):
+        if not dataset_id:
+            raise APIException(detail='The query param dataset_id is required.')
+

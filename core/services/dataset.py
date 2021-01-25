@@ -16,6 +16,7 @@ from common.validations import validate_allowed_fields, validate_allowed_type_fi
 
 from constance import config
 
+
 class DatasetService:
 
     _data: Dict
@@ -41,7 +42,7 @@ class DatasetService:
             )
 
     @staticmethod
-    def get_dataset(request: Request):
+    def get_all_dataset(request: Request):
         paginator = CustomPagination()
         paginator.page_size = config.PAG_DATASET
         datasets = Dataset.objects.load_all()

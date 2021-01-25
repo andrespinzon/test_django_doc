@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 CONSTANCE_CONFIG = {
     'PAG_DATASET': (5, 'Pagination dataset.'),
+    'PAG_ROW': (5, 'Pagination rows.')
 }
 
 # Application definition

@@ -16,6 +16,6 @@ def dataset_view(request: Request) -> Response:
         data: Dict = service.upload_dataset(request=request, user=request.user)
         return Response(data=data, status=HTTP_201_CREATED)
     elif request.method == 'GET':
-        return DatasetService.get_dataset(request)
+        return DatasetService.get_all_dataset(request)
     else:
         raise APIException(detail=f'The method {request.method} is invalid.')
