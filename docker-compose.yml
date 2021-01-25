@@ -1,0 +1,24 @@
+version: '3'
+services:
+  db:
+    image: mdillon/postgis:9.6-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=trycore
+
+  web:
+    build: .
+    container_name: trycore
+    command: bash -c "sleep 10 && python manage.py migrate && python manage.py runserver 0.0.0.0:5000"
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/testtrycore
+    environment:
+      - DB_NAME=trycore
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_EXTERNAL=postgresql://postgres:postgres@db:5432/trycore
