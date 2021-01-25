@@ -13,3 +13,18 @@ def create_logger(request, user):
     }
     conn.insert_one(data)
     print('Done')
+
+
+def get_all_logger():
+    conn = ConnectionDb.connect()
+    loggers = conn.find()
+    return [
+        {
+            'IP': logger['IP'],
+            'endpoint': logger['endpoint'],
+            'user': logger['user'],
+            'datetime': logger['datetime']
+        }
+        for logger in loggers
+    ]
+
