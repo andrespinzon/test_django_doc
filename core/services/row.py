@@ -1,15 +1,32 @@
 import pandas as pd
 
+from django.contrib.gis.geos import Point
+
+from config.extention import engine
+from core.models import Row
+
 
 class RowService:
     _data: None
 
-    def __init__(self, file_path):
-        self.file_path = file_path
+    def __init__(self, file_path, dataset_id):
+        self._file_path = file_path
+        self._dataset_id = dataset_id
 
-    def create_row(self):
-        self._data = pd.read_csv(self.file_path)
+    def read_csv_file(self):
+        self._data = pd.read_csv(self._file_path)
 
-    def set_dataset(self, dataset_id):
-        self.create_row()
-        return self._data.assign(dataset_id=dataset_id)
+    def set_dataset(self):
+        self._data = self._data.assign(dataset_id=self._dataset_id)
+
+    def create_rows(self):
+        self.read_csv_file()
+        self.set_dataset()
+        return [
+            Row(
+                point=Point(row['lat'], row['lon']),
+                client_id=row['client_id'],
+                client_name=row['client_name'],
+                dataset_id=row['dataset_id'],
+            ) for i, row in self._data.iterrows()
+        ]
