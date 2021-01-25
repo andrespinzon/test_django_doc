@@ -35,3 +35,6 @@ class DatasetService:
                 detail=f'The operation is invalid. Message: {error.messages[0]}',
                 code=HTTP_400_BAD_REQUEST
             )
+
+    @staticmethod
+    def get_dataset():

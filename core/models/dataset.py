@@ -1,6 +1,7 @@
 from django.db import models
 
 from datetime import date
+from core.managers import DatasetManager
 
 
 class Dataset(models.Model):
@@ -10,3 +11,5 @@ class Dataset(models.Model):
     id: int = models.AutoField(primary_key=True)
     name: str = models.CharField('Name', max_length=95)
     date: date = models.DateField('Date', auto_now_add=True, db_index=True)
+
+    objects: DatasetManager = DatasetManager()
