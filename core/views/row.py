@@ -16,4 +16,3 @@ def row_view(request: Request) -> Response:
         return RowService.get_all_rows(request, dataset_id=dataset_id)
     else:
         raise APIException(detail=f'The method {request.method} is invalid.')
-''

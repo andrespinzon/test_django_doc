@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models import PointField
-from django.contrib.auth.models import User
 
 from core.models import Dataset
+from core.managers import RowManager
 
 
 class Row(models.Model):
@@ -15,3 +15,5 @@ class Row(models.Model):
     point: Point = PointField('Point')
     client_id: int = models.IntegerField('Client Id')
     client_name: str = models.CharField('Client Name', max_length=45)
+
+    objects: RowManager = RowManager()
