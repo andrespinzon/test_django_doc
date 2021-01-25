@@ -5,6 +5,7 @@ from rest_framework.exceptions import APIException
 from rest_framework.request import Request
 from constance import config
 
+from common.logger import create_logger
 from common.paginator import CustomPagination
 from core.models import Row
 from core.serializers import RowSerializer
@@ -39,7 +40,7 @@ class RowService:
     def get_all_rows(request: Request, dataset_id: int, name: str):
         if not dataset_id:
             raise APIException(detail='The query param dataset_id is required.')
-
+        create_logger(request=request, user=request.user)
         paginator = CustomPagination()
         paginator.page_size = config.PAG_ROW
         rows = Row.objects.load_by_dataset_id_and_name(dataset_id=dataset_id, name=name)

@@ -7,6 +7,7 @@ from rest_framework.exceptions import APIException
 from rest_framework.request import Request
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
+from common.logger import create_logger
 from common.paginator import CustomPagination
 from core.models import Dataset, Row
 from core.serializers import DatasetSerializer
@@ -21,7 +22,7 @@ class DatasetService:
 
     _data: Dict
 
-    def upload_dataset(self, request: Request, user: User):
+    def upload_dataset(self, request: Request):
         self._data = request.data
 
         fields = {'file', 'name'}
@@ -29,6 +30,7 @@ class DatasetService:
         validate_allowed_fields(data=self._data, allowed_fields=fields)
         validate_allowed_type_files(data=self._data, field='file', type_files={'csv'})
 
+        create_logger(request=request, user=request.user)
         try:
             with atomic_transaction():
                 dataset = Dataset.objects.create(**{'name': self._data.get('name')})
@@ -43,6 +45,7 @@ class DatasetService:
 
     @staticmethod
     def get_all_dataset(request: Request):
+        create_logger(request=request, user=request.user)
         paginator = CustomPagination()
         paginator.page_size = config.PAG_DATASET
         datasets = Dataset.objects.load_all()

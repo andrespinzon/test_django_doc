@@ -15,7 +15,7 @@ from core.services import DatasetService
 def dataset_view(request: Request) -> Response:
     if request.method == 'POST':
         service: DatasetService = DatasetService()
-        data: Dict = service.upload_dataset(request=request, user=request.user)
+        data: Dict = service.upload_dataset(request=request)
         return Response(data=data, status=HTTP_201_CREATED)
     elif request.method == 'GET':
         return DatasetService.get_all_dataset(request)

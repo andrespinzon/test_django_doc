@@ -7,18 +7,50 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=trycore
+      - POSTGRES_DB=testdjango_dev
+
+  migrationdb:
+    build: .
+    image: migration_doc
+    command: bash -c "sleep 10 && python manage.py migrate"
+    volumes:
+      - .:/test_django_doc
+    environment:
+      - DB_NAME=testdjango_dev
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_EXTERNAL=postgresql://postgres:postgres@db:5432/testdjango_dev
+    depends_on:
+      - db
+
+
+  loaddata:
+    build: .
+    image: loaddata_doc
+    command: bash -c "sleep 10 && python manage.py loaddata seeds/user.json"
+    volumes:
+      - .:/test_django_doc
+    environment:
+      - DB_NAME=testdjango_dev
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_EXTERNAL=postgresql://postgres:postgres@db:5432/testdjango_dev
+    depends_on:
+      - migrationdb
 
   web:
     build: .
-    container_name: trycore
-    command: bash -c "sleep 10 && python manage.py migrate && python manage.py runserver 0.0.0.0:5000"
+    container_name: test_django_doc
+    command: bash -c "sleep 10 && python manage.py runserver 0.0.0.0:5000"
     ports:
       - 5000:5000
     volumes:
-      - .:/testtrycore
+      - .:/test_django_doc
     environment:
-      - DB_NAME=trycore
+      - DB_NAME=testdjango_dev
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_EXTERNAL=postgresql://postgres:postgres@db:5432/trycore
+      - DB_EXTERNAL=postgresql://postgres:postgres@db:5432/testdjango_dev
+    depends_on:
+      - loaddata
+
