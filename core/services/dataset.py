@@ -38,3 +38,7 @@ class DatasetService:
 
     @staticmethod
     def get_dataset():
+        data = Dataset.objects.load_all()
+
+
+        return data
