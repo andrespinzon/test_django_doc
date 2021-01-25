@@ -4,19 +4,23 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db.transaction import atomic as atomic_transaction
 from rest_framework.exceptions import APIException
+from rest_framework.request import Request
 from rest_framework.status import HTTP_400_BAD_REQUEST
 
+from common.paginator import CustomPagination
 from core.models import Dataset, Row
+from core.serializers import DatasetSerializer
 from core.services.row import RowService
 from common.validations import validate_allowed_fields, validate_allowed_type_files, \
     validate_allowed_fields_filters, validate_required_fields
 
+from constance import config
 
 class DatasetService:
 
     _data: Dict
 
-    def upload_dataset(self, request, user: User):
+    def upload_dataset(self, request: Request, user: User):
         self._data = request.data
 
         fields = {'file', 'name'}
@@ -37,8 +41,14 @@ class DatasetService:
             )
 
     @staticmethod
-    def get_dataset():
-        data = Dataset.objects.load_all()
+    def get_dataset(request: Request):
+        paginator = CustomPagination()
+        paginator.page_size = config.PAG_DATASET
+        datasets = Dataset.objects.load_all()
+        datasets = paginator.paginate_queryset(datasets, request)
+        data = DatasetSerializer(
+            instance=datasets,
+            many=True
+        ).data
+        return paginator.get_paginated_response(data)
 
-
-        return data
