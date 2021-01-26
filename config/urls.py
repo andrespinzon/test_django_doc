@@ -14,8 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework_simplejwt import views as jwt_views
+
+from core.urls import dataset_urlpatterns, row_urlpatterns
+from core.views import logger_view, all_logger_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/', include([
+        path('datasets/', include(dataset_urlpatterns)),
+        path('rows/', include(row_urlpatterns)),
+        path('token/', jwt_views.TokenObtainPairView.as_view()),
+        path('token/refresh/', jwt_views.TokenRefreshView.as_view()),
+        path('logger/', logger_view)
+    ])),
+    path('logger/', all_logger_view),
 ]
